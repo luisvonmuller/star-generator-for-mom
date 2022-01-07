@@ -1,43 +1,21 @@
-use std::iter::{IntoIterator, Iterator};
-use std::{
-    error::Error,
-    fs::File,
-    io::{BufRead, BufReader},
-};
+use std::{error::Error, fs::File, io::BufReader};
+
+pub mod drawer;
+pub mod helpers;
 
 // The name should be "Our Wizards"
 
-#[derive(Debug)]
-struct Alumni {
-    name: String,
-    book: String,
-}
-
-impl IntoIterator for Alumni {
-    type Item = Alumni;
-    type IntoIter = IntoIter<Self::Item>; // https://doc.rust-lang.org/std/iter/trait.IntoIterator.html
-    fn into_iter(&mut self) -> Self::IntoIter {
-        // https://doc.rust-lang.org/std/iter/trait.Iterator.html
-        self
-    }
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Student {
+    pub name: String, /* Student's name like: João Pessoa */
+    pub book: String, /* Books name like: Teens 3 */
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let alumnis = File::open("./sample.txt")?;
-    let reader = BufReader::new(&alumnis);
-    for alumni in reader.lines() {
-        /* Multi Thread should begin here? */
-        let alumni = alumni?.trim().to_owned();
-        let alumni_info: Vec<Alumni> = alumni
-            .split("-")
-            .collect::<Vec<&str>>()
-            .map(|position| Alumni {
-                name: position.to_owned(),
-                book: position.to_owned(),
-            })
-            .collect();
-        println!("{:?}", alumni_info);
-    }
-
+    let file_information = File::open("./sample.txt")?;
+    let file_reader = BufReader::new(&file_information);
+    let mut students_collection: Vec<Student> = Vec::new(); // Initializing the colection.
+    let students_collection = helpers::students_collections(file_reader, &mut students_collection)?;
+    println!("{:?}", students_collection);
     Ok(())
 }
