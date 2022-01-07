@@ -25,8 +25,8 @@ pub struct Student {
 async fn main() -> Result<(), Box<dyn Error>> {
     let file_information = File::open("./sample.txt")?;
     let file_reader = BufReader::new(&file_information);
-
     let students_collections: Students = Arc::new(Mutex::new(Vec::new()));
+
     if let Ok(student_collection_populated) =
         helpers::students_collections(file_reader, students_collections)
     {
@@ -43,12 +43,8 @@ pub async fn process_stars(students_collection: Students) {
         let physical_cores_number = num_cpus::get();
         let our_thread_pool = ThreadPool::new(physical_cores_number);
         let _clone = data_collection.clone();
-        // !IM DONE FOR THE MORNING.
         for student in _clone {
-            // Todo - Do stuff with the mutex  now, like passing it to every funcking job. But the vector... anoys.
             our_thread_pool.execute(move || drawer::process(&student));
         }
     };
-
-    println!("So far, so Great!");
 }
