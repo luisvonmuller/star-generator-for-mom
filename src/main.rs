@@ -15,7 +15,7 @@ struct Alumni {
 
 impl IntoIterator for Alumni {
     type Item = Alumni;
-
+    type IntoIter = IntoIter<Self::Item>; // https://doc.rust-lang.org/std/iter/trait.IntoIterator.html
     fn into_iter(&mut self) -> Self::IntoIter {
         // https://doc.rust-lang.org/std/iter/trait.Iterator.html
         self
