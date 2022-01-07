@@ -40,12 +40,13 @@ pub async fn process_stars(students_collection: Students) {
     use threadpool::ThreadPool;
 
     if let Ok(data_collection) = students_collection.lock() {
-        let logical_cores_number = num_cpus::get() * 2; // Will get Logical Cores ? - I don't know if its valid for every...
-        let our_thread_pool = ThreadPool::new(logical_cores_number);
+        let physical_cores_number = num_cpus::get();
+        let our_thread_pool = ThreadPool::new(physical_cores_number);
+        let _clone = data_collection.clone();
         // !IM DONE FOR THE MORNING.
-        for student in &mut data_collection {
+        for student in _clone {
             // Todo - Do stuff with the mutex  now, like passing it to every funcking job. But the vector... anoys.
-            our_thread_pool.execute(move || println!("Timbum 😎"));
+            our_thread_pool.execute(move || drawer::process(&student));
         }
     };
 

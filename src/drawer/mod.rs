@@ -4,7 +4,6 @@
 */
 use crate::Student;
 
-pub async fn process(info: &Student) -> Result<String, ()> {
+pub fn process(info: &Student) {
     println!("I'm done Drawing the Star of: {:#?}", info);
-    Ok("Thread done.".to_string())
 }
