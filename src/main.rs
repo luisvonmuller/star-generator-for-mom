@@ -14,11 +14,24 @@ pub struct Student {
 async fn main() -> Result<(), Box<dyn Error>> {
     let file_information = File::open("./sample.txt")?;
     let file_reader = BufReader::new(&file_information);
-    let mut students_collection: Vec<Student> = Vec::new(); // Initializing the colection.
+    let mut students_collection: Vec<Student> = Vec::new(); // !WARNING I don't think this matters. Why not just create it inside the function?
                                                             /* Async Structuring the Collection with Tokyo Stream */
 
     /* Ok Then here I'll have to Use and Arc because Students_collection must be borrowed
-    with some 'static life time, and to be shared between threads in a safe way... */
+    with some 'static life time, and to be shared between threads in a safe way...
+
+        https://doc.rust-lang.org/std/sync/struct.Arc.html
+        https://stackoverflow.com/questions/68059435/argument-requires-that-value-is-borrowed-for-static-not-working-for-non-copy
+
+    I'think Arc Is enought because...
+
+    The type Arc<T> provides shared ownership of a value of type T, allocated in the heap. I
+    nvoking clone on Arc produces a new Arc instance, which points to the same allocation on the heap as the source Arc,
+    while increasing a reference count. When the last Arc pointer to a given allocation is destroyed,
+    the value stored in that allocation (often referred to as “inner value”) is also dropped.
+    Shared references in Rust disallow mutation by default, and Arc is no exception: you cannot generally obtain a mutable reference
+    to something inside an Arc. If you need to mutate through an Arc, use Mutex, RwLock, or one of the Atomic types.
+    */
     let mut students_collection = stream::iter(helpers::students_collections(
         file_reader,
         &mut students_collection,
