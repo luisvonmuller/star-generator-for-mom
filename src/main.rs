@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::{error::Error, fs::File, io::BufReader};
 use tokio_stream::{self as stream, StreamExt};
 
@@ -14,8 +15,6 @@ pub struct Student {
 async fn main() -> Result<(), Box<dyn Error>> {
     let file_information = File::open("./sample.txt")?;
     let file_reader = BufReader::new(&file_information);
-    let mut students_collection: Vec<Student> = Vec::new(); // !WARNING I don't think this matters. Why not just create it inside the function?
-                                                            /* Async Structuring the Collection with Tokyo Stream */
 
     /* Ok Then here I'll have to Use and Arc because Students_collection must be borrowed
     with some 'static life time, and to be shared between threads in a safe way...
@@ -32,16 +31,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Shared references in Rust disallow mutation by default, and Arc is no exception: you cannot generally obtain a mutable reference
     to something inside an Arc. If you need to mutate through an Arc, use Mutex, RwLock, or one of the Atomic types.
     */
-    let mut students_collection = stream::iter(helpers::students_collections(
-        file_reader,
-        &mut students_collection,
-    )?);
-
+    let mut students_collection = stream::iter(helpers::students_collections(file_reader)?);
+    /*!I think the arc must be created here within a mutex, by that I mean giving main threads ownership to later itarete overself.think */
     /* I think this will block thread spawing ? */
     while let Some(student) = students_collection.next().await {
-        tokio::spawn(async {
+        tokio::spawn(async move {
             println!("Spawning Thread...");
-            drawer::process(student).await;
+            drawer::process(&student).await;
         });
 
         return Ok(());

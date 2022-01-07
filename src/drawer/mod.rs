@@ -5,5 +5,6 @@
 use crate::Student;
 
 pub async fn process(info: &Student) -> Result<String, ()> {
-    Ok(String::from("I'm done Drawing the Star..."))
+    println!("I'm done Drawing the Star of: {:#?}", info);
+    Ok("Thread done.".to_string())
 }
