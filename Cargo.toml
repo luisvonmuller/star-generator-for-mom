@@ -8,6 +8,7 @@ version = "0.0.1"
 [dependencies]
 jemallocator = "0.3.2"
 num_cpus = "1.13.1"
+resvg = "0.20.0"
 threadpool = "1.8.1"
 tokio = {version = "1.1.15", features = ["full"]}
 tokio-stream = "0.1.8"

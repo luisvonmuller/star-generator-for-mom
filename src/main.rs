@@ -7,7 +7,6 @@ static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 
 use std::sync::{Arc, Mutex};
 use std::{error::Error, fs::File, io::BufReader};
-// use tokio_stream::{self as stream, StreamExt};
 
 pub mod drawer;
 pub mod helpers;
@@ -42,7 +41,7 @@ pub async fn process_stars(students_collection: Students) {
     if let Ok(data_collection) = students_collection.lock() {
         let physical_cores_number = num_cpus::get();
         let our_thread_pool = ThreadPool::new(physical_cores_number);
-        let _clone = data_collection.clone();
+        let _clone = data_collection.clone(); // TODO: This is really necessary?
         for student in _clone {
             our_thread_pool.execute(move || drawer::process(&student));
         }
