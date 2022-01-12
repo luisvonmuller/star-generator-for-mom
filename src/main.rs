@@ -5,9 +5,10 @@ extern crate threadpool;
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 
+use std::env;
 use std::sync::{Arc, Mutex};
 use std::{error::Error, fs::File, io::BufReader};
-
+/* Some Stuff */
 pub mod drawer;
 pub mod helpers;
 
@@ -22,7 +23,7 @@ pub struct Student {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let file_information = File::open("./sample.txt")?;
+    let file_information = File::open(format!("{}/sample.txt", env::current_dir()?.display()))?;
     let file_reader = BufReader::new(&file_information);
     let students_collections: Students = Arc::new(Mutex::new(Vec::new()));
 
@@ -39,7 +40,7 @@ pub async fn process_stars(students_collection: Students) {
     use threadpool::ThreadPool;
 
     if let Ok(data_collection) = students_collection.lock() {
-        let physical_cores_number = num_cpus::get();
+        let physical_cores_number = num_cpus::get() * 2;
         let our_thread_pool = ThreadPool::new(physical_cores_number);
         let _clone = data_collection.clone(); // TODO: This is really necessary?
         for student in _clone {
