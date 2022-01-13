@@ -1,8 +1,9 @@
 use crate::Student;
 use std::env;
-
-const PATH: &str = "mockup_wizards.svg";
 use std::fs;
+
+/* The SVG file name that We will always Use */
+const PATH: &str = "mockup_wizards.svg";
 
 pub fn process(info: &Student) {
     let mut content = fs::read_to_string(format!(
